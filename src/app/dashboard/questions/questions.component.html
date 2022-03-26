@@ -1,0 +1,156 @@
+<div class="float-right my-3 mx-2">
+    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        (click)="clickAddQuestion()">Add New Question</button>
+</div>
+
+<table class="table my-5" *ngFor="let row of queData">
+  <tbody>
+    <tr>
+      <th scope="row">Question</th>
+      <td>{{row.question}}</td>
+    </tr>
+    <tr>
+      <th scope="row">A)</th>
+      <td>{{row.option_a}}</td>
+    </tr>
+    <tr>
+      <th scope="row">B)</th>
+      <td>{{row.option_b}}</td>
+    </tr>
+    <tr>
+      <th scope="row">C)</th>
+      <td>{{row.option_c}}</td>
+    </tr>
+  </tbody>
+  <button (click)="deleteQuestion(row)" class="btn btn-danger btn-sm">Delete</button>
+</table>
+
+
+ <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Quiz</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+           
+                <!-- Question Form -->
+                <form [formGroup]="questionForm" (ngSubmit)="onAddQuestion()" >
+                    <!-- Question -->
+                    <div class="form-outline mb-4">
+                      <label class="form-label" for="name">Question</label>
+                      <input
+                        type="text"
+                        id="question"
+                        class="form-control form-control-lg"
+                        formControlName="question"
+                        [ngClass]="{
+                          'is-invalid': f['question'].errors && f['question'].touched
+                        }"
+                      />
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="f['question'].hasError('required')"
+                      >
+                        please ask question
+                      </div>
+                    </div>
+
+                    <!-- option a -->
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="option_a">A). </label>
+                        <input
+                          type="text"
+                          id="option_a"
+                          class="form-control form-control-lg"
+                          formControlName="option_a"
+                          [ngClass]="{
+                            'is-invalid': f['option_a'].errors && f['option_a'].touched
+                          }"
+                        />
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="f['option_a'].hasError('required')"
+                        >
+                          fill option 
+                        </div>
+                      </div>
+                      
+                      <!-- option b -->
+                      <div class="form-outline mb-4">
+                        <label class="form-label" for="option_b">B). </label>
+                        <input
+                          type="text"
+                          id="option_b"
+                          class="form-control form-control-lg"
+                          formControlName="option_b"
+                          [ngClass]="{
+                            'is-invalid': f['option_b'].errors && f['option_b'].touched
+                          }"
+                        />
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="f['option_b'].hasError('required')"
+                        >
+                          fill option 
+                        </div>
+                      </div>
+
+                      <!-- option c -->
+                      <div class="form-outline mb-4">
+                        <label class="form-label" for="option_c">C). </label>
+                        <input
+                          type="text"
+                          id="option_c"
+                          class="form-control form-control-lg"
+                          formControlName="option_c"
+                          [ngClass]="{
+                            'is-invalid': f['option_c'].errors && f['option_c'].touched
+                          }"
+                        />
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="f['option_c'].hasError('required')"
+                        >
+                          fill option 
+                        </div>
+                      </div>
+    
+                    
+                    <!-- buttons -->
+                    <div class="d-flex justify-content-around">
+                      <button
+                       *ngIf="!edit"
+                        class="btn btn-success"
+                        type="submit"
+                        data-bs-dismiss="modal"
+                        [disabled]="questionForm.invalid || !questionForm.value"
+                      >
+                        Submit
+                      </button>
+                      <button *ngIf="edit"
+                        class="btn btn-success"
+                        type="submit"
+                        [disabled]="questionForm.invalid || !questionForm.value"
+                      >
+                        Update
+                      </button>
+                      <button
+                        class="btn btn-warning"
+                        (click)="clear()"
+                        type="button"
+                      >
+                        Clear
+                      </button> 
+                 </div>
+                  </form>
+
+            </div>
+            <div class="modal-footer">
+               <button type="button" id="cancel" class="btn btn-secondary btn-sm"
+                    data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
