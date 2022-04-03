@@ -17,8 +17,9 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  email: any;
-  password: any;
+  public email: any;
+  public password: any;
+  public indexValue: number;
 
   registerdUserData: Object;
 
@@ -28,7 +29,9 @@ export class LoginComponent implements OnInit {
   onLogin(){
     if(this.authService.isAuthenticated(this.email, this.password)){
       localStorage.setItem('dash_key', "true");
-      this.router.navigateByUrl("dashboard")
+      this.router.navigateByUrl("dashboard");
+      this.indexValue = this.authService.indexValue;
+      // console.log('indexxxx',this.indexValue);
     }
     else{
       this.invalidMsg = true;

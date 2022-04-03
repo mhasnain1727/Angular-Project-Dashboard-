@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { QuizComponent } from './dashboard/quiz/quiz.component';
 import { UserComponent } from './dashboard/user/user.component';
 import { AuthGuard } from './guards/auth.guard';
 import { HomeComponent } from './home/home.component';
@@ -22,7 +23,10 @@ const routes: Routes = [
     path: "dashboard", component: DashboardComponent, canActivate: [AuthGuard], 
   },
   {
-    path: "profile", component: UserComponent, canActivate: [AuthGuard]
+    path: "dashboard/profile", component: UserComponent, canActivate: [AuthGuard]
+  },
+  {
+    path: "dashboard/quiz", component: QuizComponent, canActivate: [AuthGuard]
   },
   {
     path: "", redirectTo:"/home", pathMatch: "full"

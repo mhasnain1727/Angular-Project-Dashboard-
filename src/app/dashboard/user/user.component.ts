@@ -1,79 +1,265 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import { LoginComponent } from '../../login/login.component'
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
 })
-export class UserComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router) {
+
+export class UserComponent implements AfterViewInit {
+
+  public loginedUserIndexValue: number;
+  public userData: any;
+
+  public email: any;
+
+  public currentUserData: any;
+  public updateForm: any;
+  public edit: boolean = false;
+  public isUpdated: boolean = false;
+  public editImg: boolean = false;
+
+  constructor(
+    private authService: AuthService,
+    private formBuilder: FormBuilder,
+    private customValidator: AuthService,
+    ) { }
+
+    // public login : LoginComponent;
+    @ViewChild(LoginComponent) login;
+    
+  ngOnInit(): void {
+    
+    this.loginedUserIndexValue = this.authService.indexValue;
+    // console.log('helloooindex',this.loginedUserIndexValue);
+    // console.log('acc', this.login.indexValue);
+
+    console.log('index', this.loginedUserIndexValue);
     this.loadImage();
+    this.loadData();
   }
 
-  ngOnInit(): void {}
+  ngAfterViewInit(){
+    console.log('acc1', this.login.indexValue);
+  }
 
   val: string = '';
   url = './assets/images/profile.png';
 
-  // user_data: Object;
-  user_data = this.authService.registerdUserData;
-
-  index: number = this.authService.indexValue;
-
-  name = this.user_data[this.index].name;
-  mobile = this.user_data[this.index].mobile;
-  email = this.user_data[this.index].email;
-  address = this.user_data[this.index].address.city;
-  house_no = this.user_data[this.index].address.house_no;
-  street = this.user_data[this.index].address.street;
-  city = this.user_data[this.index].address.city;
-  zip = this.user_data[this.index].address.zip;
-  state = this.user_data[this.index].address.state;
-  password = this.user_data[this.index].password;
+  loadData() {
+    this.userData = JSON.parse(localStorage.getItem('user_data'));
+    this.currentUserData = this.userData[this.loginedUserIndexValue];
+  }
 
   loadImage() {
-    if (localStorage.getItem(this.email)) {
-      this.url = JSON.parse(localStorage.getItem(this.email));
+    const userData1 = JSON.parse(localStorage.getItem('user_data'))
+    console.log(userData1[this.loginedUserIndexValue], userData1, this.loginedUserIndexValue);
+    if ( (JSON.parse(localStorage.getItem('user_data')))[this.loginedUserIndexValue].image )  {
+      console.log('image set', JSON.parse(localStorage.getItem('user_data'))[this.loginedUserIndexValue].image)
+      this.url = JSON.parse(JSON.parse(localStorage.getItem('user_data'))[this.loginedUserIndexValue].image);
     }
   }
 
-  edit: boolean = false;
-  isUpdated: boolean = false;
-  flag: boolean = true;
-  editImg: boolean = false;
+  
 
-  onEdit() {
-    this.edit = true;
-  }
 
   onSubmit() {
     this.isUpdated = true;
-    localStorage.removeItem('dash_key');
+    // localStorage.removeItem('dash_key');
 
-    if (this.flag) {
-      const oldRecords = localStorage.getItem('user_data');
-      const userList = JSON.parse(oldRecords);
-      userList[this.index].name = this.name;
-      userList[this.index].mobile = this.mobile;
-      userList[this.index].email = this.email;
-      userList[this.index].password = this.password;
-      localStorage.setItem('user_data', JSON.stringify(userList));
+    const oldRecords = localStorage.getItem('user_data');
+    const userList = JSON.parse(oldRecords);
+    console.log('aa', userList[this.loginedUserIndexValue], 'b', this.updateForm.value);
+    userList[this.loginedUserIndexValue] = this.updateForm.value;
+    localStorage.setItem('user_data', JSON.stringify(userList));
 
-      setTimeout(() => {
-        this.router.navigateByUrl('login');
-      }, 2000);
-    }
+
+    this.loadData();
+    setTimeout(() => {
+      this.edit = false;
+      this.isUpdated = false;
+    }, 1000);
+
   }
 
   onImageSelected(event) {
     var reader = new FileReader();
     reader.readAsDataURL(event.target.files[0]);
     reader.onload = (event: any) => {
-      // console.log(reader.result);
       this.val = JSON.stringify(reader.result);
-      localStorage.setItem(this.email, this.val);
+      console.log('12',this.val);
+
+      //update pic in user data
+      const oldRecords = localStorage.getItem('user_data');
+      const userList = JSON.parse(oldRecords);
+      userList[this.loginedUserIndexValue].image = this.val;
+      localStorage.setItem('user_data', JSON.stringify(userList));
+
+      // localStorage.setItem(this.email, this.val);
     };
+
+    this.loadImage();
+  }
+
+  onEditImg() {
+    this.editImg = true;
+  }
+
+  onImageUpload() {
+    this.editImg = false;
+    this.loadImage();
+  }
+
+  // ...................................
+
+  onEdit() {
+    this.edit = true;
+
+    this.updateForm = this.formBuilder.group(
+      {
+        name: [
+          this.currentUserData.name,
+          [Validators.required, Validators.minLength(3)],
+        ],
+        mobile: [
+          this.currentUserData.mobile,
+          [Validators.required, Validators.pattern('[0-9 ]{10}')],
+        ],
+        email: [
+          this.currentUserData.email,
+          [Validators.required, Validators.email],
+        ],
+        password: ['', Validators.required],
+        confirmPassword: ['', Validators.required],
+        address: this.formBuilder.group({
+          house_no: [this.currentUserData.address.house_no],
+          street: [this.currentUserData.address.street],
+          city: [this.currentUserData.address.city],
+          state: [this.currentUserData.address.state],
+          zip: [this.currentUserData.address.zip],
+        }),
+        checkBox: [''],
+      },
+      {
+        validator: this.customValidator.passwordMatchValidator(
+          'password',
+          'confirmPassword'
+        ),
+      }
+    );
+  }
+  get address() {
+    return this.updateForm.get('address') as FormArray;
+  }
+
+  get f() {
+    return this.updateForm.controls;
+  }
+
+  get checkBox() {
+    return this.updateForm.get('checkBox');
+  }
+
+  clear() {
+    this.updateForm.reset();
+  }
+
+  onCancelUpdate() {
+    this.edit = false;
   }
 }
+
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
+
+// export class DashboardComponent implements OnInit {
+//   formValue!: FormGroup;
+//   questionModelObj: DashboardModel = new DashboardModel()
+//   questionData !:any;
+//   showAdd!:boolean;
+//   showupdate!:boolean
+//   constructor(private formbuilder: FormBuilder,private api: ApiService) { }
+
+//   ngOnInit(): void {
+//     this.formValue = this.formbuilder.group({
+//       question: [''],
+//       option1: [''],
+//       option2 : [''],
+//       option3: [''],
+//       option4 : [''],
+//       answer : ['']
+//   })
+//       this.getAll();
+// }
+// clickAdd(){
+//   this.formValue.reset();
+//   this.showAdd=true;
+//   this.showupdate=false;
+// }
+// postQuestionDetails() {
+//   this.questionModelObj.question = this.formValue.value.question
+//   this.questionModelObj.option1 = this.formValue.value.option1
+//   this.questionModelObj.option2 = this.formValue.value.option2
+//   this.questionModelObj.option3 = this.formValue.value.option3
+//   this.questionModelObj.option4 = this.formValue.value.option4
+//   this.questionModelObj.answer = this.formValue.value.answer
+   
+//   this.api.postQuestion(this.questionModelObj)
+//       .subscribe(res => {
+//         console.log(res);
+//         alert("Question added successfully")
+//         this.formValue.reset()
+//         let ref = document.getElementById('cancel')
+//         ref?.click();
+//         this.formValue.reset();
+//         this.getAll()
+//       },
+//         err => {
+//           alert("something went wrong")
+//         }
+//       )
+// }
+// getAll(){
+//   this.api.getQuestion()
+//   .subscribe(res=>{
+//     this.questionData=res;
+//   })
+// }
+// deleteQuestion(row:any){
+//   this.api.deleteQuestion(row.id)
+//   .subscribe(res=>{
+//     alert("Question Deleted")
+//     this.getAll()
+//   })
+// }
+// onEdit(row:any){
+//   this.showAdd=false;
+//   this.showupdate=true;
+//   this.questionModelObj.id=row.id
+//   this.formValue.controls['question'].setValue(row.question)
+//   this.formValue.controls['option1'].setValue(row.option1)
+//   this.formValue.controls['option2'].setValue(row.option2)
+//   this.formValue.controls['option3'].setValue(row.option3)
+//   this.formValue.controls['option4'].setValue(row.option4)
+//   this.formValue.controls['answer'].setValue(row.answer)
+// }
+// update(){
+//   this.questionModelObj.question = this.formValue.value.question
+//   this.questionModelObj.option1 = this.formValue.value.option1
+//   this.questionModelObj.option2 = this.formValue.value.option2
+//   this.questionModelObj.option3 = this.formValue.value.option3
+//   this.questionModelObj.option4 = this.formValue.value.option4
+//   this.questionModelObj.answer = this.formValue.value.answer
+//   this.api.updateQuestion(this.questionModelObj,this.questionModelObj.id)
+//   .subscribe(res=>{
+//     alert("updated successfully")
+//     let ref = document.getElementById('cancel')
+//     ref?.click();
+//     this.formValue.reset();
+//     this.getAll()
+//   })
+// }
+// }

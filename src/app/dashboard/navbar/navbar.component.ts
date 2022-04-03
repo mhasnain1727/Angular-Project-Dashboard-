@@ -17,11 +17,14 @@ export class NavbarComponent implements OnInit {
 
   onLogout(){
     localStorage.removeItem('dash_key');
-    this.router.navigateByUrl('/login')
+    this.router.navigateByUrl('/login');
   }
 
-
   onProfile(){
-    this.router.navigateByUrl('profile')
+    this.router.navigateByUrl('dashboard/profile');
+  }
+
+  onQuiz(){
+    this.router.navigateByUrl('dashboard/quiz');
   }
 }

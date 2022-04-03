@@ -13,6 +13,7 @@ import { SidebarComponent } from './dashboard/sidebar/sidebar.component';
 import { UserComponent } from './dashboard/user/user.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuestionsComponent } from './dashboard/questions/questions.component';
+import { QuizComponent } from './dashboard/quiz/quiz.component';
 
 
 
@@ -27,7 +28,8 @@ import { QuestionsComponent } from './dashboard/questions/questions.component';
     FooterComponent,
     SidebarComponent,
     UserComponent,
-    QuestionsComponent
+    QuestionsComponent,
+    QuizComponent
   ],
   imports: [
     BrowserModule,

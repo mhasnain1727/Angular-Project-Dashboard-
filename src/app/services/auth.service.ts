@@ -7,9 +7,9 @@ import { FormGroup } from '@angular/forms';
 export class AuthService {
   constructor() { }
 
-  registerdUserData: Object;
-  isValid_user: boolean;
-  indexValue: number = -1;
+  public registerdUserData: Object;
+  public isValid_user: boolean;
+  public indexValue: number = -1;
 
   isAuthenticated(email: any, password: any) {
     this.registerdUserData = JSON.parse(localStorage.getItem('user_data'));
@@ -25,6 +25,10 @@ export class AuthService {
     }
     return false;
   }
+
+  // getIndexValue(){
+  //   return this.indexValue;
+  // }
 
   passwordMatchValidator(password: string, confirmPassword: string) {
     return (formGroup: FormGroup) => {
