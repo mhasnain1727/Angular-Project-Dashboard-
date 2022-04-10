@@ -54,7 +54,7 @@ export class QuestionsComponent implements OnInit {
     this.question_data();
   }
 
-  deleteQuestion(row, i) {
+  deleteQuestion(i) {
     let questionList = JSON.parse(localStorage.getItem('question_data'));
     // console.log('aaaa', row)
     questionList = questionList.filter((val) => questionList.indexOf(val) != i);
@@ -74,7 +74,7 @@ export class QuestionsComponent implements OnInit {
     let questionList = JSON.parse(localStorage.getItem('question_data'));
     questionList[this.editQuestionIndexVal] = this.questionForm.value;
     localStorage.setItem('question_data', JSON.stringify(questionList));
-    this.question_data();
     this.edit = false;
+    this.question_data();
   }
 }

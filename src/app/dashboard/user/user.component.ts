@@ -32,8 +32,8 @@ export class UserComponent implements AfterViewInit {
     @ViewChild(LoginComponent) login;
     
   ngOnInit(): void {
-    
-    this.loginedUserIndexValue = this.authService.indexValue;
+    this.loginedUserIndexValue = JSON.parse(localStorage.getItem('indexVal'));
+    // this.loginedUserIndexValue = this.authService.indexValue;
     // console.log('helloooindex',this.loginedUserIndexValue);
     // console.log('acc', this.login.indexValue);
 
@@ -56,9 +56,9 @@ export class UserComponent implements AfterViewInit {
 
   loadImage() {
     const userData1 = JSON.parse(localStorage.getItem('user_data'))
-    console.log(userData1[this.loginedUserIndexValue], userData1, this.loginedUserIndexValue);
+    // console.log(userData1[this.loginedUserIndexValue], userData1, this.loginedUserIndexValue);
     if ( (JSON.parse(localStorage.getItem('user_data')))[this.loginedUserIndexValue].image )  {
-      console.log('image set', JSON.parse(localStorage.getItem('user_data'))[this.loginedUserIndexValue].image)
+      // console.log('image set', JSON.parse(localStorage.getItem('user_data'))[this.loginedUserIndexValue].image)
       this.url = JSON.parse(JSON.parse(localStorage.getItem('user_data'))[this.loginedUserIndexValue].image);
     }
   }

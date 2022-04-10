@@ -20,6 +20,7 @@ export class AuthService {
       ) {
         this.isValid_user = true;
         this.indexValue = parseInt(i);
+        localStorage.setItem('indexVal', JSON.stringify(this.indexValue));
         return true;
       }
     }

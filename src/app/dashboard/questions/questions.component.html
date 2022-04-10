@@ -3,11 +3,11 @@
     (click)="clickAddQuestion()">Add New Question</button>
 </div>
 
-<table class="table my-5" *ngFor="let row of queData; let indexOfelement=index">
+<table class="table my-5 " *ngFor="let row of queData; let indexOfelement=index">
   <tbody>
     <tr>
-      <th scope="row">Question</th>
-      <td>{{row.question}}</td>
+      <th scope="row d-flex justify-content-left">Question: </th>
+      <td><span class="text-light h5">{{row.question}}</span></td>
     </tr>
     <tr>
       <th scope="row">A)</th>
@@ -22,10 +22,10 @@
       <td>{{row.option_c}}</td>
     </tr>
   </tbody>
-  <div class="container d-flex justify-content-between">
+  <div class="d-flex gap-5">
     <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
       (click)="clickEditQuestion(row, indexOfelement)">Edit</button>
-    <button (click)="deleteQuestion(row, indexOfelement)" class="btn btn-danger btn-sm">Delete</button>
+    <button (click)="deleteQuestion(indexOfelement)" class="btn btn-danger btn-sm">Delete</button>
   </div>
 </table>
 
@@ -112,7 +112,7 @@
               [disabled]="questionForm.invalid || !questionForm.value" (click)="onAddQuestion()">
               Submit
             </button>
-            <button *ngIf="edit" class="btn btn-success" type="submit"
+            <button *ngIf="edit" class="btn btn-success" type="submit" data-bs-dismiss="modal"
               [disabled]="questionForm.invalid || !questionForm.value" (click)=" onUpdate()">
               Update
             </button>

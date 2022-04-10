@@ -18,6 +18,7 @@ export class NavbarComponent implements OnInit {
   onLogout(){
     localStorage.removeItem('dash_key');
     this.router.navigateByUrl('/login');
+    localStorage.removeItem('indexVal');
   }
 
   onProfile(){
